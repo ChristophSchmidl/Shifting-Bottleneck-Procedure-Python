@@ -156,22 +156,22 @@ class Jobshop(nx.DiGraph):
         #neatly outputs the jobshop digraph
         for m in sorted(self.machines):
             for j in sorted(self.machines[m]):
-                print("{}: {}".format(j, self.node[j]['C']))
+                print("{}: {}".format(j, self.nodes[j]['C']))
 
     def _forward(self):
         for n in nx.topological_sort(self):
-            S = max([self.node[j]['C'] for j in self.predecessors(n)], default = 0)
-            self.add_node(n, S = S, C = S + self.node[n]['p'])
+            S = max([self.nodes[j]['C'] for j in self.predecessors(n)], default = 0)
+            self.add_node(n, S = S, C = S + self.nodes[n]['p'])
 
     def _backward(self):
         for n in list(reversed(list(nx.topological_sort(self)))):
-            Cp = min([self.node[j]['Sp'] for j in self.successors(n)], default = self._makespan)
-            self.add_node(n, Sp = Cp - self.node[n]['p'], Cp = Cp)
+            Cp = min([self.nodes[j]['Sp'] for j in self.successors(n)], default = self._makespan)
+            self.add_node(n, Sp = Cp - self.nodes[n]['p'], Cp = Cp)
 
     def _computeCriticalPath(self):
         G = set()
         for n in self:
-            if self.node[n]['C'] == self.node[n]['Cp']:
+            if self.nodes[n]['C'] == self.nodes[n]['Cp']:
                 G.add(n)
         self._criticalPath = self.subgraph(G)
 
@@ -209,19 +209,19 @@ class Shift(Jobshop):
             for ij in sorted(self.machines[i]):
                 if ij in ("U", "V"):
                     continue
-                s += "{0:>5d}".format(self.node[ij]['p'])
+                s += "{0:>5d}".format(self.nodes[ij]['p'])
             print(s)
             s = "{0:<7s}".format("r:")
             for ij in sorted(self.machines[i]):
                 if ij in ("U", "V"):
                     continue
-                s += "{0:>5d}".format(self.node[ij]['S'])
+                s += "{0:>5d}".format(self.nodes[ij]['S'])
             print(s)
             s = "{0:<7s}".format("d:")
             for ij in sorted(self.machines[i]):
                 if ij in ("U", "V"):
                     continue
-                s += "{0:>5d}".format(self.node[ij]['Cp'])
+                s += "{0:>5d}".format(self.nodes[ij]['Cp'])
             print(s)
             print("\n")
     
@@ -229,11 +229,11 @@ class Shift(Jobshop):
         for m in self.machines:
             lateness = {}
             for seq in permutations(self.machines[m]):
-                release = [self.node[j]['S'] for j in seq]
-                due = [self.node[j]['Cp'] for j in seq]
+                release = [self.nodes[j]['S'] for j in seq]
+                due = [self.nodes[j]['Cp'] for j in seq]
                 finish = [0]*len(release)
                 for i, j in enumerate(seq):
-                    finish[i] = max(finish[i-1], release[i]) +self.node[j]['p']
+                    finish[i] = max(finish[i-1], release[i]) +self.nodes[j]['p']
                 late = max([f-d for d,f in zip(due,finish)])
                 lateness[seq] = late
             s, l = argmin_kv(lateness)
