@@ -1,11 +1,17 @@
 from classes import Job, Jobshop
 import networkx as nx
 from pulp import *
+from jobshoploader import JobShopLoader
 
+'''
 jobs = {}
 jobs[1] = Job(1, [1, 2, 3], [10, 8, 4])
 jobs[2] = Job(2, [2, 1, 4, 3], [8, 3, 5, 6])
 jobs[3] = Job(3, [1, 2, 4], [4, 7, 3])
+'''
+
+instance_filename = "data/instances/taillard/ta01.txt"
+jobs = JobShopLoader.load_jobshop(instance_filename)
 
 def LP(jobs):
     """
@@ -18,6 +24,7 @@ def LP(jobs):
 
     prob = LpProblem("Job shop", LpMinimize)
 
+    print("Problem init")
     H = sum(js.nodes[j]['p'] for j in js)
     T = range(H + 1)
 
@@ -44,6 +51,8 @@ def LP(jobs):
     for i in js.machines:
         for t in T:
             prob += lpSum([p(ij, t) for ij in js.machines[i] if t <= H - js.nodes[ij]['p'] + 1]) <= 1
+
+    print("Pre-solve procedure")
 
     #prob.solve(GUROBI())
     prob.solve()

@@ -7,6 +7,11 @@ def argmin_kv(d):
     """
     return min(d.items(), key=lambda x: x[1])
 
+#########################################################
+#                       Job
+#########################################################
+
+
 class Job(object):
     """
     A class that creates jobs.
@@ -21,6 +26,15 @@ class Job(object):
         self.Id = Id
         self.r = r  # route
         self.p = p  # processing times
+
+    def __repr__(self) -> str:
+        return "ID: {},\nMachine routes: {},\nProcessing times: {}\n".format(self.Id, self.r, self.p)
+
+
+#########################################################
+#                       JobShop
+#########################################################
+
 
 class Jobshop(nx.DiGraph):
     """
@@ -193,6 +207,11 @@ class Jobshop(nx.DiGraph):
         self._backward()
         self._computeCriticalPath()
         self._dirty = False
+
+#########################################################
+#                       Shift
+#########################################################
+
 
 class Shift(Jobshop):
     def output(self):
