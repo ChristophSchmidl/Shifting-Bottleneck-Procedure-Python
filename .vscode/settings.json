@@ -1,0 +1,6 @@
+{
+    "python.defaultInterpreterPath": "/Users/cschmidl/phd/repos/Shifting-Bottleneck-Procedure-Python/venv/bin/python",
+    "terminal.integrated.env.osx": {"PYTHONPATH": "${workspaceFolder}"},
+    "terminal.integrated.env.linux": {"PYTHONPATH": "${workspaceFolder}"},
+    "terminal.integrated.env.windows": {"PYTHONPATH": "${workspaceFolder}"},
+}
