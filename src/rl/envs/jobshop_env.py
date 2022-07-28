@@ -179,6 +179,13 @@ class JobShopEnv(gym.Env):
         return self._get_current_state_representation()
 
     def _prioritization_non_final(self):
+        '''
+        Search-space reduction: Prioritize non-final states.
+        Considering two jobs, J_1 and J_2, to allocate to the same machine,
+        if J_1 is at its final operation (i.e., the job has already completed |M| - 1 operations
+        and needs only one more operation to be finished), and J_2 is not, it is always better
+        to allocate J_2, as it will still need another machine afterwards.
+        '''
         if self.nb_machine_legal >= 1:
             for machine in range(self.machines):
                 if self.machine_legal[machine]:
@@ -298,6 +305,18 @@ class JobShopEnv(gym.Env):
                             time_step += 1
 
     def step(self, action: int):
+        '''
+        A dense reward function based on the scheduled area. After each action, 
+        we compute the difference between the duration of the allocated operations
+        and the introduced holes - the idle time of a machine:
+
+        R(s,a) = p_{aj} - \sum_{m \in M} empty_m(s,s')
+
+        where s and s' are the current and next state respectively; a the j^{th} operation
+        of J_a with a processing time p_{aj} scheduled, s' the next state resulting from applying
+        action a to state s, empty_m(s,s') a function returning the amount of time a machine m is IDLE
+        while transitioning from state s to state s'.
+        '''
         reward = 0.0
 
         if action == self.jobs:
