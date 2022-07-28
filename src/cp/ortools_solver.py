@@ -12,7 +12,7 @@ def main():
     #           Define the data
     ###########################################
 
-    instance = JobShopLoader.load_jobshop("data/instances/taillard/ta01.txt")
+    instance = JobShopLoader.load_jobshop("data/instances/taillard/ta11.txt")
 
     print(f"Number of jobs is {instance.job_count}")
 

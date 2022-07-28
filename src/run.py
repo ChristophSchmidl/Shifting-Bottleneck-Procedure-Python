@@ -16,7 +16,19 @@ if __name__ == "__main__":
     jobs[3] = Job(3, [1,2,4], [4,7,3])
 
 
-    js.addJobs(jobs)
+    jobshop = Jobshop()
+    jobshop.addJobs(jobs)
+
+    #color_map = ['red' if node == "V" or node == "U" else 'green' for node in jobshop]
+    #nx.draw(jobshop.machines[0], pos=nx.spring_layout(jobshop.machines[0]),node_color=color_map,node_shape='o',edge_color='black',with_labels=True,font_size=10,node_size=500)
+    #plt.show()
+
+
+    #jobshop.output()
+
+    exit()
+
+    #js.addJobs(jobs)
 
     #for node, data in js.nodes(data=True):
     #    print(data)

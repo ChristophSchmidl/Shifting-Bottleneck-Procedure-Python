@@ -1,5 +1,5 @@
 import networkx as nx
-
+import matplotlib.pyplot as plt
 
 class Jobshop(nx.DiGraph):
     """
@@ -53,6 +53,8 @@ class Jobshop(nx.DiGraph):
         self.add_node("U", p=0)
         #finish node
         self.add_node("V", p=0)
+
+
         #set dirty flag
         self._dirty = True
         #set initial makespan
@@ -101,20 +103,25 @@ class Jobshop(nx.DiGraph):
         super().remove_edges_from(*args, **kwargs)
 
     def handleJobRoutings(self, jobs):
+        # Iterate over all jobs
         for j in jobs.values():
             #add start edge
-            self.add_edge("U", (j.r[0], j.Id))
+            self.add_edge("U", (j.r[0], j.id))
             #add the edges (processing order) routing the nodes (tasks)
             for m, n in zip(j.r[:-1], j.r[1:]):
-                self.add_edge((m, j.Id), (n, j.Id))
+                self.add_edge((m, j.id), (n, j.id))
             #add finishing edge
-            self.add_edge((j.r[-1], j.Id), "V")
+            self.add_edge((j.r[-1], j.id), "V")
+        #self.plot_graph()
+
 
     def handleJobProcessingTimes(self, jobs):
         for j in jobs.values():
             #add every task and its corresponding processing time to the graph
             for m, p in zip(j.r, j.p):
-                self.add_node((m, j.Id), p=p)
+                self.add_node((m, j.id), p=p)
+                print((m, j.id), p)
+        #self.plot_graph()
 
     def makeMachineSubgraphs(self):
         #creates a set with machines' ids
@@ -123,6 +130,7 @@ class Jobshop(nx.DiGraph):
         for m in machineIds:
             self.machines[m] = self.subgraph(ij for ij in self if ij[0] == m not in ("U", "V"))
             #self.machines[m].remove_nodes_from(["U", "V"])
+        #self.plot_graph()
 
     def addJobs(self, jobs):
         #every time a job is inserted: add the jobs' edges (routing), jobs' nodes (tasks), 
@@ -172,3 +180,9 @@ class Jobshop(nx.DiGraph):
         self._backward()
         self._computeCriticalPath()
         self._dirty = False
+
+    def plot_graph(self):
+        #plot the graph
+        color_map = ['red' if node == "V" or node == "U" else 'green' for node in self]
+        nx.draw(self, pos=nx.spring_layout(self),node_color=color_map,node_shape='o',edge_color='black',with_labels=True,font_size=10,node_size=500)
+        plt.show()

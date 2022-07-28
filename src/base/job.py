@@ -8,10 +8,21 @@ class Job(object):
     p: list - Processing times for every task
     """
 
-    def __init__(self, Id, r = None, p = None):
-        self.Id = Id
-        self.r = []  # machine_routes
-        self.p = []  # processing times
+    def __init__(self, id, r = None, p = None):
+        self.id = id
+
+        if r is None:
+            self.r = [] # machine_routes
+        else:
+            self.r = r
+        
+        if p is None:
+            self.p = [] # processing times
+        else:
+            self.p = p
+
+        # TODO
+        self.d = []  # due dates
 
     def get_duration_sum(self):
         return sum(self.p)
@@ -24,7 +35,7 @@ class Job(object):
         return len(self.r)
 
     def __repr__(self) -> str:
-        return "ID: {},\nMachine routes: {},\nProcessing times: {}\n".format(self.Id, self.r, self.p)
+        return "Id: {},\nMachine routes: {},\nProcessing times: {}\n".format(self.id, self.r, self.p)
 
     def get_tuple_list_representation(self):
         return [(r, p) for r, p in zip(self.r, self.p)]
